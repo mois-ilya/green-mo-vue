@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="home">
     <div v-if="loading" class="loading">Loading</div>
 
     <div v-if="error" class="error">{{ error }}</div>
@@ -50,7 +50,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#app{
+#home{
   width: 100%;
   height: 100%;
 }
