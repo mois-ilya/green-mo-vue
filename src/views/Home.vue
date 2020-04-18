@@ -1,23 +1,20 @@
 <template>
-  <div class="post">
+  <div class="map">
     <div v-if="loading" class="loading">Loading</div>
 
     <div v-if="error" class="error">{{ error }}</div>
 
-    <div v-if="layer" class="content">
-      <h2>{{ layer }}</h2>
-    </div>
+    <MapBoxMap v-if="layer" class="map"></MapBoxMap>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import mapBoxMap from '@/components/mapBoxMap.vue'
+import MapBoxMap from '@/components/MapBoxMap.vue'
 
 export default {
   name: 'Home',
   components: {
-    mapBoxMap
+    MapBoxMap
   },
   data() {
     return {
@@ -27,19 +24,16 @@ export default {
     };
   },
   created() {
-    // fetch the data when the view is created and the data is
-    // already being observed
     this.fetchData();
   },
   watch: {
-    // call again the method if the route changes
     $route: "fetchData"
   },
   methods: {
     fetchData() {
       this.error = this.layer = null;
       this.loading = true;
-      
+
       fetch("./api/advice_to_plants.geojson")
         .then(x => x.json())
         .then((layer, err) => {
@@ -54,3 +48,10 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.map{
+  width: 100%;
+  height: 100%;
+}
+</style>
