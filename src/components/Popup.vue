@@ -1,6 +1,5 @@
 <template>
-  <div>
-  </div>
+  <div></div>
 </template>
 
 <script>
@@ -45,10 +44,16 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .mapboxgl-popup {
   max-width: 400px;
   font: 12px/20px "Helvetica Neue", Arial, Helvetica, sans-serif;
+  color: black;
+}
+
+.mapboxgl-popup-close-button {
+    padding: 5px 10px;
+    font-weight: bold;
 }
 
 .filter-group {

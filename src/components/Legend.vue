@@ -33,6 +33,7 @@ export default {
     position: absolute;
     right: 10px;
     z-index: 1;
+    color: black;
 }
 
 .legend h4 {
