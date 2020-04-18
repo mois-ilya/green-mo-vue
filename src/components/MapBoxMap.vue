@@ -1,13 +1,12 @@
 <template>
   <div>
-    <div id="state-legend" class="legend">
-      <h4>Зона ответственности</h4>
-    </div>
+    <Legend :data="legend"></Legend>
     <div ref="map" class="map"></div>
   </div>
 </template>
 
 <script>
+import Legend from '@/components/Legend.vue'
 import Mapboxgl from "mapbox-gl";
 import 'mapbox-gl/dist/mapbox-gl.css'
 Mapboxgl.accessToken =
@@ -66,15 +65,71 @@ export default {
   name: "MapBoxMap",
   data() {
     return {
-      map: false
+      map: false,
+      legend: [
+            {color: 'red', title: 'Город'},
+            {color: 'green', title: 'Мо '}
+        ]
     };
   },
-  mounted() {    
-    this.map = new Mapboxgl.Map({
+  components: {
+    Legend
+  },
+  props: ['layer'],
+  mounted() {  
+    const map = this.map = new Mapboxgl.Map({
       container: this.$refs['map'],
       style: "mapbox://styles/mapbox/light-v10",
       zoom: 13.5,
       center: pointCoordinates
+    });
+
+    const data = {
+        type: this.layer.type,
+        features: this.layer.features.filter(item => placeFilter ? item.properties.place == placeFilter : true)
+    }
+
+    this.legend = [... new Set(data.features.map(item => item.properties.place))].map(item => {
+        const value = map_values.find(x => x.name == item);
+        return {
+            color: value.color,
+            title: value.title
+        };
+    });
+
+    map.on('load', () => {
+        map.addSource('ethnicity', {
+            type: 'geojson',
+            data: data
+        });
+
+        map.addLayer({
+            'id': 'population',
+            'type': 'circle',
+            'source': 'ethnicity',
+            'paint': {
+                'circle-radius': isTouch ? 9 : 7,
+                'circle-color': {
+                    property: 'place',
+                    type: 'categorical',
+                    stops: map_values.map(item => [item.name, item.color])
+                }
+            }
+        });
+
+        const point = idParam && data.features.find(x => x.properties.cartodb_id == idParam);
+        point && map.flyTo({ center: point.geometry.coordinates });
+        point && new Popup(point.properties, point.geometry.coordinates, map, map_inAuthority, showContacts, map_values);
+
+        // map.on('click', 'population',  popupEventShow)
+
+        map.on('mouseenter', 'population', function () {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+
+        map.on('mouseleave', 'population', function () {
+            map.getCanvas().style.cursor = '';
+        });
     });
   }
 };
@@ -88,30 +143,6 @@ html,
   height: 100%;
   margin: 0;
   padding: 0;
-}
-
-.legend {
-  background-color: #fff;
-  border-radius: 3px;
-  bottom: 30px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  font: 12px/20px "Helvetica Neue", Arial, Helvetica, sans-serif;
-  padding: 10px;
-  position: absolute;
-  right: 10px;
-  z-index: 1;
-}
-
-.legend h4 {
-  margin: 0 0 10px;
-}
-
-.legend div span {
-  border-radius: 50%;
-  display: inline-block;
-  height: 10px;
-  margin-right: 5px;
-  width: 10px;
 }
 
 .mapboxgl-popup {

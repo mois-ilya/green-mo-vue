@@ -4,7 +4,7 @@
 
     <div v-if="error" class="error">{{ error }}</div>
 
-    <MapBoxMap v-if="layer" class="map"></MapBoxMap>
+    <MapBoxMap v-if="layer" class="map" :layer="layer"></MapBoxMap>
   </div>
 </template>
 
