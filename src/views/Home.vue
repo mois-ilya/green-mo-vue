@@ -1,5 +1,5 @@
 <template>
-  <div class="map">
+  <div id="app">
     <div v-if="loading" class="loading">Loading</div>
 
     <div v-if="error" class="error">{{ error }}</div>
@@ -50,7 +50,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.map{
+#app{
   width: 100%;
   height: 100%;
 }

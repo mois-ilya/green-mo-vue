@@ -19,10 +19,6 @@ Mapboxgl.accessToken =
   "pk.eyJ1IjoibW9pcy1pbHlhIiwiYSI6ImNrMXN6eGZhMzBhMzMzZ3J1c2o5eHRpZHkifQ.FLDN8SJE1R8asDEvcXHizQ";
 
 const queryString = window.location.search;
-// const urlParams = new URLSearchParams(queryString);
-// const placeFilter = urlParams.get("placeFilter") || urlParams.get("street"); // street depricated
-// const idParam = urlParams.get("id");
-// const showContacts = urlParams.get("showContacts") == "true";
 const pointCoordinates = [30.345591, 59.924];
 const isTouch = "ontouchstart" in window;
 
@@ -92,12 +88,6 @@ export default {
     }));
 
     const data = this.layer;
-    // {
-    //   type: this.layer.type,
-    //   features: this.layer.features.filter(item =>
-    //     placeFilter ? item.properties.place == placeFilter : true
-    //   )
-    // };
 
     this.legend = [
       ...new Set(data.features.map(item => item.properties.place))
@@ -129,12 +119,6 @@ export default {
         }
       });
 
-    //   const point =
-    //     idParam && data.features.find(x => x.properties.cartodb_id == idParam);
-    //   point && map.flyTo({ center: point.geometry.coordinates });
-
-      // point && new Popup(point.properties, point.geometry.coordinates, map, map_inAuthority, showContacts, map_values);
-
       map.on("click", "population", e => {
         const feature = e.features[0];
         const properties = feature.properties;
@@ -153,10 +137,6 @@ export default {
         this.popup.inAuthority = map_inAuthority[properties.inAuthority];
         this.popup.contactText = properties.contact || "Контакт отсутсвует";
         this.popup.description = properties.description || "Описание отсутствует";
-        //   ? showContacts
-        //     ? properties.contact
-        //     : "Контакт скрыт"
-        //   : "Контакт отсутсвует";
         this.popup.visible = true;
       });
 
@@ -180,58 +160,5 @@ html,
   height: 100%;
   margin: 0;
   padding: 0;
-}
-
-.mapboxgl-popup {
-  max-width: 400px;
-  font: 12px/20px "Helvetica Neue", Arial, Helvetica, sans-serif;
-}
-
-.filter-group {
-  font: 12px/20px "Helvetica Neue", Arial, Helvetica, sans-serif;
-  font-weight: 600;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 1;
-  border-radius: 3px;
-  width: 120px;
-  color: #fff;
-}
-
-.filter-group input[type="checkbox"]:first-child + label {
-  border-radius: 3px 3px 0 0;
-}
-
-.filter-group label:last-child {
-  border-radius: 0 0 3px 3px;
-  border: none;
-}
-
-.filter-group input[type="checkbox"] {
-  display: none;
-}
-
-.filter-group input[type="checkbox"] + label {
-  background-color: #3386c0;
-  display: block;
-  cursor: pointer;
-  padding: 10px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-}
-
-.filter-group input[type="checkbox"] + label {
-  background-color: #3386c0;
-  text-transform: capitalize;
-}
-
-.filter-group input[type="checkbox"] + label:hover,
-.filter-group input[type="checkbox"]:checked + label {
-  background-color: #4ea0da;
-}
-
-.filter-group input[type="checkbox"]:checked + label:before {
-  content: "✔";
-  margin-right: 5px;
 }
 </style>
