@@ -1,64 +1,70 @@
 <template>
   <div>
+    <Popup
+      v-if="popup.visible"
+      :map="map"
+      :popup="popup"
+    ></Popup>
     <Legend :data="legend"></Legend>
     <div ref="map" class="map"></div>
   </div>
 </template>
 
 <script>
-import Legend from '@/components/Legend.vue'
+import Legend from "@/components/Legend.vue";
+import Popup from "@/components/Popup.vue";
 import Mapboxgl from "mapbox-gl";
-import 'mapbox-gl/dist/mapbox-gl.css'
+import "mapbox-gl/dist/mapbox-gl.css";
 Mapboxgl.accessToken =
   "pk.eyJ1IjoibW9pcy1pbHlhIiwiYSI6ImNrMXN6eGZhMzBhMzMzZ3J1c2o5eHRpZHkifQ.FLDN8SJE1R8asDEvcXHizQ";
 
 const queryString = window.location.search;
-const urlParams = new URLSearchParams(queryString);
-const placeFilter = urlParams.get('placeFilter') || urlParams.get('street'); // street depricated
-const idParam = urlParams.get('id');
-const showContacts = urlParams.get('showContacts') == 'true';
-const pointCoordinates =  [30.345591, 59.924];
-const isTouch = "ontouchstart" in window
+// const urlParams = new URLSearchParams(queryString);
+// const placeFilter = urlParams.get("placeFilter") || urlParams.get("street"); // street depricated
+// const idParam = urlParams.get("id");
+// const showContacts = urlParams.get("showContacts") == "true";
+const pointCoordinates = [30.345591, 59.924];
+const isTouch = "ontouchstart" in window;
 
 const map_inAuthority = {
-    "мелкий": "Мелкий саженец цветы, кусты, земля и т.д.",
-    "деревья": "Деревья",
-    "вертикаль": "Вертикальное озеленение",
-    "благоустройство": "Благоустройство",
-    "элемент": "Любой элемент благоустройства"
-}
+  мелкий: "Мелкий саженец цветы, кусты, земля и т.д.",
+  деревья: "Деревья",
+  вертикаль: "Вертикальное озеленение",
+  благоустройство: "Благоустройство",
+  элемент: "Любой элемент благоустройства"
+};
 
 const map_values = [
-    {
-        name: "мо",
-        title: "ЗНОП местного значения",
-        color: "greenyellow"
-    },
-    {
-        name: "район",
-        title: "Центральный район",
-        color: "green"
-    },
-    {
-        name: "город",
-        title: "ЗНОП городского значения",
-        color: "yellow"
-    },
-    {
-        name: "улица",
-        title: "Улица",
-        color: "purple"
-    },
-    {
-        name: "дом",
-        title: "Собственность дома",
-        color: "pink"
-    },
-    {
-        name: "хз",
-        title: "Нерелевантные запросы",
-        color: "gray"
-    }
+  {
+    name: "мо",
+    title: "ЗНОП местного значения",
+    color: "greenyellow"
+  },
+  {
+    name: "район",
+    title: "Центральный район",
+    color: "green"
+  },
+  {
+    name: "город",
+    title: "ЗНОП городского значения",
+    color: "yellow"
+  },
+  {
+    name: "улица",
+    title: "Улица",
+    color: "purple"
+  },
+  {
+    name: "дом",
+    title: "Собственность дома",
+    color: "pink"
+  },
+  {
+    name: "хз",
+    title: "Нерелевантные запросы",
+    color: "gray"
+  }
 ];
 
 export default {
@@ -66,70 +72,101 @@ export default {
   data() {
     return {
       map: false,
-      legend: [
-            {color: 'red', title: 'Город'},
-            {color: 'green', title: 'Мо '}
-        ]
+      legend: null,
+      popup: {
+        visible: false
+      }
     };
   },
   components: {
-    Legend
+    Legend,
+    Popup
   },
-  props: ['layer'],
-  mounted() {  
-    const map = this.map = new Mapboxgl.Map({
-      container: this.$refs['map'],
+  props: ["layer"],
+  mounted() {
+    const map = (this.map = new Mapboxgl.Map({
+      container: this.$refs["map"],
       style: "mapbox://styles/mapbox/light-v10",
       zoom: 13.5,
       center: pointCoordinates
+    }));
+
+    const data = this.layer;
+    // {
+    //   type: this.layer.type,
+    //   features: this.layer.features.filter(item =>
+    //     placeFilter ? item.properties.place == placeFilter : true
+    //   )
+    // };
+
+    this.legend = [
+      ...new Set(data.features.map(item => item.properties.place))
+    ].map(item => {
+      const value = map_values.find(x => x.name == item);
+      return {
+        color: value.color,
+        title: value.title
+      };
     });
 
-    const data = {
-        type: this.layer.type,
-        features: this.layer.features.filter(item => placeFilter ? item.properties.place == placeFilter : true)
-    }
+    map.on("load", () => {
+      map.addSource("ethnicity", {
+        type: "geojson",
+        data: data
+      });
 
-    this.legend = [... new Set(data.features.map(item => item.properties.place))].map(item => {
-        const value = map_values.find(x => x.name == item);
-        return {
-            color: value.color,
-            title: value.title
-        };
-    });
+      map.addLayer({
+        id: "population",
+        type: "circle",
+        source: "ethnicity",
+        paint: {
+          "circle-radius": isTouch ? 9 : 7,
+          "circle-color": {
+            property: "place",
+            type: "categorical",
+            stops: map_values.map(item => [item.name, item.color])
+          }
+        }
+      });
 
-    map.on('load', () => {
-        map.addSource('ethnicity', {
-            type: 'geojson',
-            data: data
-        });
+    //   const point =
+    //     idParam && data.features.find(x => x.properties.cartodb_id == idParam);
+    //   point && map.flyTo({ center: point.geometry.coordinates });
 
-        map.addLayer({
-            'id': 'population',
-            'type': 'circle',
-            'source': 'ethnicity',
-            'paint': {
-                'circle-radius': isTouch ? 9 : 7,
-                'circle-color': {
-                    property: 'place',
-                    type: 'categorical',
-                    stops: map_values.map(item => [item.name, item.color])
-                }
-            }
-        });
+      // point && new Popup(point.properties, point.geometry.coordinates, map, map_inAuthority, showContacts, map_values);
 
-        const point = idParam && data.features.find(x => x.properties.cartodb_id == idParam);
-        point && map.flyTo({ center: point.geometry.coordinates });
-        point && new Popup(point.properties, point.geometry.coordinates, map, map_inAuthority, showContacts, map_values);
+      map.on("click", "population", e => {
+        const feature = e.features[0];
+        const properties = feature.properties;
+        const coordinates = feature.geometry.coordinates.slice();
 
-        // map.on('click', 'population',  popupEventShow)
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
 
-        map.on('mouseenter', 'population', function () {
-            map.getCanvas().style.cursor = 'pointer';
-        });
+        debugger
 
-        map.on('mouseleave', 'population', function () {
-            map.getCanvas().style.cursor = '';
-        });
+        this.popup.coordinates = coordinates;
+        this.popup.cartodb_id = properties.cartodb_id;
+        this.popup.name = properties.name;
+        this.popup.place = map_values.find(item => item.name == properties.place).title;
+        this.popup.inAuthority = map_inAuthority[properties.inAuthority];
+        this.popup.contactText = properties.contact || "Контакт отсутсвует";
+        this.popup.description = properties.description || "Описание отсутствует";
+        //   ? showContacts
+        //     ? properties.contact
+        //     : "Контакт скрыт"
+        //   : "Контакт отсутсвует";
+        this.popup.visible = true;
+      });
+
+      map.on("mouseenter", "population", function() {
+        map.getCanvas().style.cursor = "pointer";
+      });
+
+      map.on("mouseleave", "population", function() {
+        map.getCanvas().style.cursor = "";
+      });
     });
   }
 };
