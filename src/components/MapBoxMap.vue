@@ -1,10 +1,6 @@
 <template>
   <div>
-    <Popup
-      v-if="popup.visible"
-      :map="map"
-      :popup="popup"
-    ></Popup>
+    <Popup v-if="popup.visible" :map="map" :popup="popup"></Popup>
     <Legend :data="legend"></Legend>
     <div ref="map" class="map"></div>
   </div>
@@ -78,7 +74,6 @@ export default {
     Legend,
     Popup
   },
-  props: ["layer"],
   mounted() {
     const map = (this.map = new Mapboxgl.Map({
       container: this.$refs["map"],
@@ -131,10 +126,13 @@ export default {
         this.popup.coordinates = coordinates;
         this.popup.cartodb_id = properties.cartodb_id;
         this.popup.name = properties.name;
-        this.popup.place = map_values.find(item => item.name == properties.place).title;
+        this.popup.place = map_values.find(
+          item => item.name == properties.place
+        ).title;
         this.popup.inAuthority = map_inAuthority[properties.inAuthority];
         this.popup.contactText = properties.contact || "Контакт отсутсвует";
-        this.popup.description = properties.description || "Описание отсутствует";
+        this.popup.description =
+          properties.description || "Описание отсутствует";
         this.popup.visible = true;
       });
 
@@ -146,6 +144,11 @@ export default {
         map.getCanvas().style.cursor = "";
       });
     });
+  },
+  computed: {
+    layer() {
+      return this.$store.getters.layer;
+    }
   }
 };
 </script>

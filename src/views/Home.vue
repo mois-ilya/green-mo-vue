@@ -4,7 +4,7 @@
 
     <div v-if="error" class="error">{{ error }}</div>
 
-    <MapBoxMap v-if="layer" class="map" :layer="layer"></MapBoxMap>
+    <MapBoxMap v-if="loaded" class="map"></MapBoxMap>
   </div>
 </template>
 
@@ -19,7 +19,7 @@ export default {
   data() {
     return {
       loading: false,
-      layer: null,
+      loaded: false,
       error: null
     };
   },
@@ -41,7 +41,9 @@ export default {
           if (err) {
             this.error = err.toString();
           } else {
-            this.layer = layer;
+            this.$store.dispatch('setLayerAction', layer)
+            this.loaded = true;
+            // this.layer = layer;
           }
         });
     }
