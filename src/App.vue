@@ -1,9 +1,9 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer v-model="drawer" app clipped></v-navigation-drawer>
+    <Suggestion></Suggestion>
 
     <v-app-bar app clipped-left>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> -->
       <v-toolbar-title>Application</v-toolbar-title>
     </v-app-bar>
 
@@ -14,13 +14,15 @@
 </template>
 
 <script>
+import Suggestion from '@/components/Suggestion.vue'
+
 export default {
   props: {
     source: String
   },
-  data: () => ({
-    drawer: null
-  }),
+  components: {
+    Suggestion
+  },
   created() {
     this.$vuetify.theme.dark = true;
   }

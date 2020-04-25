@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Popup v-if="popup.visible" :map="map" :popup="popup"></Popup>
     <Legend :data="legend"></Legend>
     <div ref="map" class="map"></div>
   </div>
@@ -17,47 +16,6 @@ Mapboxgl.accessToken =
 const queryString = window.location.search;
 const pointCoordinates = [30.345591, 59.924];
 const isTouch = "ontouchstart" in window;
-
-const map_inAuthority = {
-  мелкий: "Мелкий саженец цветы, кусты, земля и т.д.",
-  деревья: "Деревья",
-  вертикаль: "Вертикальное озеленение",
-  благоустройство: "Благоустройство",
-  элемент: "Любой элемент благоустройства"
-};
-
-const map_values = [
-  {
-    name: "мо",
-    title: "ЗНОП местного значения",
-    color: "greenyellow"
-  },
-  {
-    name: "район",
-    title: "Центральный район",
-    color: "green"
-  },
-  {
-    name: "город",
-    title: "ЗНОП городского значения",
-    color: "yellow"
-  },
-  {
-    name: "улица",
-    title: "Улица",
-    color: "purple"
-  },
-  {
-    name: "дом",
-    title: "Собственность дома",
-    color: "pink"
-  },
-  {
-    name: "хз",
-    title: "Нерелевантные запросы",
-    color: "gray"
-  }
-];
 
 export default {
   name: "MapBoxMap",
@@ -87,7 +45,7 @@ export default {
     this.legend = [
       ...new Set(data.features.map(item => item.properties.place))
     ].map(item => {
-      const value = map_values.find(x => x.name == item);
+      const value = this.$store.getters.responsibilityAreas.find(x => x.name == item);
       return {
         color: value.color,
         title: value.title
@@ -109,7 +67,7 @@ export default {
           "circle-color": {
             property: "place",
             type: "categorical",
-            stops: map_values.map(item => [item.name, item.color])
+            stops: this.$store.getters.responsibilityAreas.map(item => [item.name, item.color])
           }
         }
       });
@@ -123,17 +81,19 @@ export default {
           coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
         }
 
+        const suggestion = {
+          id: properties.cartodb_id,
+          name: properties.name,
+          place: properties.place,
+          category: properties.inAuthority,
+          contactText: properties.contact || "Контакт отсутсвует",
+          description: properties.description || "Описание отсутствует",
+          visible: true
+        };
+
+        this.$store.dispatch("setSuggestionAction", suggestion);
+        this.$store.dispatch("setSuggestionVisibleAction", true);
         this.popup.coordinates = coordinates;
-        this.popup.cartodb_id = properties.cartodb_id;
-        this.popup.name = properties.name;
-        this.popup.place = map_values.find(
-          item => item.name == properties.place
-        ).title;
-        this.popup.inAuthority = map_inAuthority[properties.inAuthority];
-        this.popup.contactText = properties.contact || "Контакт отсутсвует";
-        this.popup.description =
-          properties.description || "Описание отсутствует";
-        this.popup.visible = true;
       });
 
       map.on("mouseenter", "population", function() {
