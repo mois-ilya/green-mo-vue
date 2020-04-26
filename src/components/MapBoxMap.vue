@@ -86,8 +86,8 @@ export default {
           name: properties.name,
           place: properties.place,
           category: properties.inAuthority,
-          contactText: properties.contact || "Контакт отсутсвует",
-          description: properties.description || "Описание отсутствует",
+          contactText: properties.contact,
+          description: properties.description,
           visible: true
         };
 

@@ -14,20 +14,20 @@
           <v-textarea
             label="Описание"
             rows="1"
+            placeholder="Описание отсутствует"
             :disabled="!isEditing"
             :value="suggestion.description"
             auto-grow
           ></v-textarea>
           <v-select
             :disabled="!isEditing"
-            v-model="suggestion.place"
             :items="responsibilityAreas"
+            v-model="suggestion.place"
             item-text="title"
             item-value="name"
             label="Зона ответственности"
             persistent-hint
             return-object
-            single-line
           ></v-select>
           <v-select
             v-model="suggestion.category"
@@ -38,17 +38,17 @@
             label="Категория изменений"
             persistent-hint
             return-object
-            single-line
           ></v-select>
           <v-text-field
             :disabled="!isEditing"
             color="white"
             label="Контакт"
+            placeholder="Контакт отсутсвует"
             v-model="suggestion.contactText"
           ></v-text-field>
           <v-row align="center">
             <v-col class="text-center" cols="6" sm="6">
-              <v-btn v-if="isEditing" text large right>Сохраниять</v-btn>
+              <v-btn text large right v-if="isEditing" @click.stop="save">Сохраниять</v-btn>
             </v-col>
             <v-col class="text-center" cols="6" sm="6">
               <v-btn text large right @click.stop="drawer = !drawer">Отменить</v-btn>
@@ -77,7 +77,7 @@ export default {
       return this.$store.getters.suggestion;
     },
     isEditing() {
-      return this.$store.getters.isEditing;
+      return !this.$store.getters.isEditing;
     },
     category() {
       return this.$store.getters.category;
