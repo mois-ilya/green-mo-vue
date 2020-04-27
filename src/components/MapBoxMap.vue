@@ -80,10 +80,10 @@ export default {
         }
 
         const suggestion = {
-          id: properties.cartodb_id,
+          id: properties.id,
           name: properties.name,
           place: properties.place,
-          category: properties.inAuthority,
+          category: properties.category,
           contactText: properties.contact,
           description: properties.description,
           visible: true

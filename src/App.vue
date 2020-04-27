@@ -4,7 +4,11 @@
 
     <v-app-bar app clipped-left>
       <v-toolbar-title>Application</v-toolbar-title>
+      <v-spacer></v-spacer>
       <v-btn text @click="toggleEditMode">
+        <v-icon v-if="!isEditable">mdi-pencil</v-icon>
+        <v-icon v-if="isEditable">mdi-eye</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-content>
@@ -25,6 +29,16 @@ export default {
   },
   created() {
     this.$vuetify.theme.dark = true;
+  },
+  computed: {
+    isEditable() {
+      return this.$store.getters.isEditable;
+    }
+  },
+  methods: {
+    toggleEditMode() {
+      this.$store.dispatch("toggleEditModeAction");
+    }
   }
 };
 </script>

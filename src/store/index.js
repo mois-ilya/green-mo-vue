@@ -6,14 +6,14 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
   state: {
     layer: null,
+    isEditable: true,
     suggestion: {
-      isEditing: false,
       visible: false,
       id: null,
       name: null,
       description: null,
       place: null,
-      inAuthority: null,
+      category: null,
       contactText: null
     },
     category: [
@@ -66,6 +66,9 @@ export const store = new Vuex.Store({
     },
     setSuggestionVisible(state, value) {
       state.suggestion.visible = value;
+    },
+    toggleEditMode(state) {
+      state.isEditable = !state.isEditable;
     }
   },
 
@@ -78,7 +81,10 @@ export const store = new Vuex.Store({
     },
     setSuggestionVisibleAction({ commit }, value) {
       commit('setSuggestionVisible', value)
-    }
+    },
+    toggleEditModeAction({ commit }) {
+      commit('toggleEditMode')
+    },
   },
 
   getters: {
@@ -93,6 +99,9 @@ export const store = new Vuex.Store({
     },
     responsibilityAreas(state) {
       return state.responsibilityAreas
+    },
+    isEditable(state) {
+      return state.isEditable
     }
   }
 })
