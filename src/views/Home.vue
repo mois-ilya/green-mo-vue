@@ -9,10 +9,11 @@
 </template>
 
 <script>
-import MapBoxMap from '@/components/MapBoxMap.vue'
+import MapBoxMap from "@/components/MapBoxMap.vue";
+import axios from "axios";
 
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
     MapBoxMap
   },
@@ -34,17 +35,16 @@ export default {
       this.error = this.layer = null;
       this.loading = true;
 
-      fetch("./api/advice_to_plants.geojson")
-        .then(x => x.json())
-        .then((layer, err) => {
+      axios
+        .get("./api/advice_to_plants.geojson")
+        .then(response => {
+          this.$store.dispatch("setLayerAction", response.data);
           this.loading = false;
-          if (err) {
-            this.error = err.toString();
-          } else {
-            this.$store.dispatch('setLayerAction', layer)
-            this.loaded = true;
-            // this.layer = layer;
-          }
+          this.loaded = true;
+        })
+        .catch(function(error) {
+          this.loading = false;
+          this.error = err.toString();
         });
     }
   }
@@ -52,7 +52,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#home{
+#home {
   width: 100%;
   height: 100%;
 }
