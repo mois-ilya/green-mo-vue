@@ -3,8 +3,8 @@
     <Suggestion></Suggestion>
 
     <v-app-bar app clipped-left>
-      <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> -->
       <v-toolbar-title>Application</v-toolbar-title>
+      <v-btn text @click="toggleEditMode">
     </v-app-bar>
 
     <v-content>
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import Suggestion from '@/components/Suggestion.vue'
+import Suggestion from "@/components/Suggestion.vue";
 
 export default {
   props: {

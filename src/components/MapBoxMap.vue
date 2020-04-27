@@ -7,7 +7,6 @@
 
 <script>
 import Legend from "@/components/Legend.vue";
-import Popup from "@/components/Popup.vue";
 import Mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 Mapboxgl.accessToken =
@@ -29,8 +28,7 @@ export default {
     };
   },
   components: {
-    Legend,
-    Popup
+    Legend
   },
   mounted() {
     const map = (this.map = new Mapboxgl.Map({
