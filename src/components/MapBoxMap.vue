@@ -1,7 +1,7 @@
 <template>
   <div>
     <Suggestion :suggestionId="suggestionId" :visibleSuggestion="visibleSuggestion"></Suggestion>
-    <Legend :data="legend"></Legend>
+    <Legend :layer="layer"></Legend>
     <div ref="map" class="map"></div>
   </div>
 </template>
@@ -23,14 +23,13 @@ export default {
   data() {
     return {
       map: false,
-      legend: null,
       visibleSuggestion: false,
       suggestionId: null
     };
   },
   components: {
     Legend,
-    Suggestion,
+    Suggestion
   },
   mounted() {
     const map = (this.map = new Mapboxgl.Map({
@@ -39,25 +38,11 @@ export default {
       zoom: 13.5,
       center: pointCoordinates
     }));
-
-    const data = this.layer;
-
-    this.legend = [
-      ...new Set(data.features.map(item => item.properties.place))
-    ].map(item => {
-      const value = this.$store.getters.responsibilityAreas.find(
-        x => x.name == item
-      );
-      return {
-        color: value.color,
-        title: value.title
-      };
-    });
-
+    
     map.on("load", () => {
       map.addSource("ethnicity", {
         type: "geojson",
-        data: data
+        data: this.layer
       });
 
       map.addLayer({
