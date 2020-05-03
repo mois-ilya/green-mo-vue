@@ -30,5 +30,8 @@ module.exports = {
       maskIcon: 'static/favicon.ico',
       msTileImage: 'static/favicon.icog'
     }
+  },
+  configureWebpack: {
+    devtool: 'source-map'
   }
 }

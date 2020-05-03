@@ -1,11 +1,13 @@
 <template>
   <div>
+    <Suggestion :suggestionId="suggestionId" :visibleSuggestion="visibleSuggestion"></Suggestion>
     <Legend :data="legend"></Legend>
     <div ref="map" class="map"></div>
   </div>
 </template>
 
 <script>
+import Suggestion from "@/components/Suggestion.vue";
 import Legend from "@/components/Legend.vue";
 import Mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -22,13 +24,13 @@ export default {
     return {
       map: false,
       legend: null,
-      popup: {
-        visible: false
-      }
+      visibleSuggestion: false,
+      suggestionId: null
     };
   },
   components: {
-    Legend
+    Legend,
+    Suggestion,
   },
   mounted() {
     const map = (this.map = new Mapboxgl.Map({
@@ -43,7 +45,9 @@ export default {
     this.legend = [
       ...new Set(data.features.map(item => item.properties.place))
     ].map(item => {
-      const value = this.$store.getters.responsibilityAreas.find(x => x.name == item);
+      const value = this.$store.getters.responsibilityAreas.find(
+        x => x.name == item
+      );
       return {
         color: value.color,
         title: value.title
@@ -65,33 +69,18 @@ export default {
           "circle-color": {
             property: "place",
             type: "categorical",
-            stops: this.$store.getters.responsibilityAreas.map(item => [item.name, item.color])
+            stops: this.$store.getters.responsibilityAreas.map(item => [
+              item.name,
+              item.color
+            ])
           }
         }
       });
 
       map.on("click", "population", e => {
         const feature = e.features[0];
-        const properties = feature.properties;
-        const coordinates = feature.geometry.coordinates.slice();
-
-        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-        }
-
-        const suggestion = {
-          id: properties.id,
-          name: properties.name,
-          place: properties.place,
-          category: properties.category,
-          contactText: properties.contact,
-          description: properties.description,
-          visible: true
-        };
-
-        this.$store.dispatch("setSuggestionAction", suggestion);
-        this.$store.dispatch("setSuggestionVisibleAction", true);
-        this.popup.coordinates = coordinates;
+        this.suggestionId = feature.properties.id;
+        this.$store.dispatch("toggleVisibleSuggestionAction", true);
       });
 
       map.on("mouseenter", "population", function() {

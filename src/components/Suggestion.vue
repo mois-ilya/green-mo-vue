@@ -1,10 +1,10 @@
 <template>
-  <v-bottom-sheet v-model="drawer" inset hide-overlay>
+  <v-bottom-sheet v-model="visibleSuggestion" inset hide-overlay>
     <v-sheet>
       <v-form ref="form">
         <v-row style="max-height: 60vh; overflow: auto">
           <v-col class="text-center" cols="1"></v-col>
-          <v-col class="text-center" cols="10">
+          <v-col v-if="visibleSuggestion" class="text-center" cols="10">
             <v-toolbar-title class="font-weight-light">#{{suggestion.id}}</v-toolbar-title>
             <v-text-field
               :disabled="!isEditable"
@@ -58,11 +58,8 @@
                   :loading="loading"
                   :disabled="loading || !changed"
                 >
-                
-                  <template>
-                    Сохраниять
-                  </template>
-                  
+                  <template>Сохраниять</template>
+
                   <template v-slot:loader>
                     <span class="custom-loader">
                       <v-icon light>cached</v-icon>
@@ -74,7 +71,7 @@
                 </v-btn>
               </v-col>
               <v-col class="text-center" cols="6" sm="6">
-                <v-btn text large right @click.stop="drawer = !drawer">Отменить</v-btn>
+                <v-btn text large right @click.stop="visibleSuggestion = false">Отменить</v-btn>
               </v-col>
             </v-row>
           </v-col>
@@ -94,20 +91,21 @@ export default {
     return {
       changed: true,
       loading: false,
-      error: false
+      error: false,
     };
   },
+  props: ["suggestionId"],
   computed: {
-    drawer: {
+    suggestion() {
+      return Object.assign({}, this.$store.getters.suggestion(this.suggestionId)); 
+    },
+    visibleSuggestion: {
       get: function() {
-        return this.$store.getters.suggestion.visible;
+        return this.$store.getters.visibleSuggestion;
       },
       set: function(value) {
-        this.$store.getters.suggestion.visible = value;
+        this.$store.dispatch("toggleVisibleSuggestionAction", false);
       }
-    },
-    suggestion() {
-      return Object.assign({}, this.$store.getters.suggestion);
     },
     isEditable() {
       return this.$store.getters.isEditable;
@@ -126,9 +124,10 @@ export default {
       axios
         .post("./api/changeSuggestion", this.suggestion)
         .then(() => {
-            this.loading = false;
+          this.loading = false;
+          this.$store.dispatch("saveSuggestionAction", this.suggestion);
         })
-        .catch((error) => {
+        .catch(error => {
           this.loading = false;
           this.error = true;
         });

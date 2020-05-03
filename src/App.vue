@@ -1,6 +1,5 @@
 <template>
   <v-app id="inspire">
-    <Suggestion></Suggestion>
 
     <v-app-bar app clipped-left>
       <v-toolbar-title>Application</v-toolbar-title>
@@ -18,14 +17,10 @@
 </template>
 
 <script>
-import Suggestion from "@/components/Suggestion.vue";
 
 export default {
   props: {
     source: String
-  },
-  components: {
-    Suggestion
   },
   created() {
     this.$vuetify.theme.dark = true;

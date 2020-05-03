@@ -5,17 +5,10 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    layer: null,
+    features: null,
+    type: null,
     isEditable: true,
-    suggestion: {
-      visible: false,
-      id: null,
-      name: null,
-      description: null,
-      place: null,
-      category: null,
-      contactText: null
-    },
+    visibleSuggestion: false,
     category: [
       {key: "name", value: "Мелкий саженец цветы, кусты, земля и т.д."},
       {key: "деревья", value: "Деревья"},
@@ -59,28 +52,30 @@ export const store = new Vuex.Store({
 
   mutations: {
     setLayer(state, layer) {
-      state.layer = layer;
+      state.features = layer.features;
+      state.type = layer.type;
     },
-    setSuggestion(state, data) {
-      state.suggestion = Object.assign(state.suggestion, data);;
-    },
-    setSuggestionVisible(state, value) {
-      state.suggestion.visible = value;
+    saveSuggestion(state, data) {
+      const properties = state.features.find(item => item.properties.id === data.id).properties;
+      Object.assign(properties, data);      
     },
     toggleEditMode(state) {
       state.isEditable = !state.isEditable;
-    }
+    },
+    toggleVisibleSuggestion(state, value) {
+      state.visibleSuggestion = value;
+    },
   },
 
   actions: {
     setLayerAction({ commit }, layer) {
       commit('setLayer', layer)
     },
-    setSuggestionAction({ commit }, value) {
-      commit('setSuggestion', value)
+    saveSuggestionAction({ commit }, value) {
+      commit('saveSuggestion', value)
     },
-    setSuggestionVisibleAction({ commit }, value) {
-      commit('setSuggestionVisible', value)
+    toggleVisibleSuggestionAction({ commit }, value) {
+      commit('toggleVisibleSuggestion', value)
     },
     toggleEditModeAction({ commit }) {
       commit('toggleEditMode')
@@ -89,10 +84,10 @@ export const store = new Vuex.Store({
 
   getters: {
     layer(state) {
-      return state.layer
-    },
-    suggestion(state) {
-      return state.suggestion
+      return {
+        features: state.features,
+        type: state.type,
+      }
     },
     category(state) {
       return state.category
@@ -102,6 +97,12 @@ export const store = new Vuex.Store({
     },
     isEditable(state) {
       return state.isEditable
+    },
+    visibleSuggestion(state) {
+      return state.visibleSuggestion
+    },
+    suggestion(state) {
+      return id => state.features.find(item => item.properties.id === id).properties;
     }
   }
 })
