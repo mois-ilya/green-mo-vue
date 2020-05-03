@@ -4,6 +4,16 @@
     <v-app-bar app clipped-left>
       <v-toolbar-title>Application</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-text-field
+        hide-details
+        prepend-icon="search"
+        single-line
+        clearable
+        @keydown.enter="test"
+      ></v-text-field>
+      <v-btn @click="geolocate" icon>
+        <v-icon v-bind:color="isGeolocate ? 'blue' : 'gray'">my_location</v-icon>
+      </v-btn>
       <v-btn text @click="toggleEditMode">
         <v-icon v-if="!isEditable">mdi-pencil</v-icon>
         <v-icon v-if="isEditable">mdi-eye</v-icon>
@@ -22,6 +32,11 @@ export default {
   props: {
     source: String
   },
+  data() {
+    return {
+      isGeolocate: false
+    }
+  },
   created() {
     this.$vuetify.theme.dark = true;
   },
@@ -33,7 +48,13 @@ export default {
   methods: {
     toggleEditMode() {
       this.$store.dispatch("toggleEditModeAction");
-    }
+    },
+    geolocate() {
+      this.$store.getters.geolocate.trigger();
+    },
+    test() {
+      alert('test')
+    },
   }
 };
 </script>
@@ -46,5 +67,9 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden !important;
+}
+
+.mapboxgl-ctrl-geolocate {
+  display: none;
 }
 </style>

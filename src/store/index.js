@@ -7,14 +7,15 @@ export const store = new Vuex.Store({
   state: {
     features: null,
     type: null,
-    isEditable: true,
+    isEditable: false,
     visibleSuggestion: false,
+    geolocate: null,
     category: [
-      {key: "name", value: "Мелкий саженец цветы, кусты, земля и т.д."},
-      {key: "деревья", value: "Деревья"},
-      {key: "вертикаль", value: "Вертикальное озеленение"},
-      {key: "благоустройство", value: "Благоустройство"},
-      {key: "элемент", value: "Любой элемент благоустройства"}
+      { key: "name", value: "Мелкий саженец цветы, кусты, земля и т.д." },
+      { key: "деревья", value: "Деревья" },
+      { key: "вертикаль", value: "Вертикальное озеленение" },
+      { key: "благоустройство", value: "Благоустройство" },
+      { key: "элемент", value: "Любой элемент благоустройства" }
     ],
     responsibilityAreas: [
       {
@@ -57,7 +58,7 @@ export const store = new Vuex.Store({
     },
     saveSuggestion(state, data) {
       const properties = state.features.find(item => item.properties.id === data.id).properties;
-      Object.assign(properties, data);      
+      Object.assign(properties, data);
     },
     toggleEditMode(state) {
       state.isEditable = !state.isEditable;
@@ -65,11 +66,17 @@ export const store = new Vuex.Store({
     toggleVisibleSuggestion(state, value) {
       state.visibleSuggestion = value;
     },
+    setGeolocate(state, geolocate) {
+      state.geolocate = geolocate;
+    }
   },
 
   actions: {
     setLayerAction({ commit }, layer) {
       commit('setLayer', layer)
+    },
+    setGeolocateAction({ commit }, geolocate) {
+      commit('setGeolocate', geolocate)
     },
     saveSuggestionAction({ commit }, value) {
       commit('saveSuggestion', value)
@@ -103,6 +110,9 @@ export const store = new Vuex.Store({
     },
     suggestion(state) {
       return id => state.features.find(item => item.properties.id === id).properties;
+    },
+    geolocate(state) {
+      return state.geolocate;
     }
   }
 })

@@ -38,7 +38,17 @@ export default {
       zoom: 13.5,
       center: pointCoordinates
     }));
-    
+
+    const geolocate = new Mapboxgl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true
+        },
+        trackUserLocation: true
+      })
+
+    map.addControl(geolocate);
+    this.$store.dispatch('setGeolocateAction', geolocate);
+
     map.on("load", () => {
       map.addSource("ethnicity", {
         type: "geojson",
