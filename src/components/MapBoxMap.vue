@@ -47,7 +47,6 @@ export default {
       })
 
     map.addControl(geolocate);
-    this.$store.dispatch('setGeolocateAction', geolocate);
 
     map.on("load", () => {
       map.addSource("ethnicity", {

@@ -9,7 +9,6 @@ export const store = new Vuex.Store({
     type: null,
     isEditable: false,
     visibleSuggestion: false,
-    geolocate: null,
     category: [
       { key: "name", value: "Мелкий саженец цветы, кусты, земля и т.д." },
       { key: "деревья", value: "Деревья" },
@@ -66,17 +65,11 @@ export const store = new Vuex.Store({
     toggleVisibleSuggestion(state, value) {
       state.visibleSuggestion = value;
     },
-    setGeolocate(state, geolocate) {
-      state.geolocate = geolocate;
-    }
   },
 
   actions: {
     setLayerAction({ commit }, layer) {
       commit('setLayer', layer)
-    },
-    setGeolocateAction({ commit }, geolocate) {
-      commit('setGeolocate', geolocate)
     },
     saveSuggestionAction({ commit }, value) {
       commit('saveSuggestion', value)
@@ -110,9 +103,6 @@ export const store = new Vuex.Store({
     },
     suggestion(state) {
       return id => state.features.find(item => item.properties.id === id).properties;
-    },
-    geolocate(state) {
-      return state.geolocate;
     }
   }
 })
