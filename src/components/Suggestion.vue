@@ -7,7 +7,7 @@
           <v-col v-if="visibleSuggestion" class="text-center" cols="10">
             <v-toolbar-title class="font-weight-light">#{{suggestion.id}}</v-toolbar-title>
             <v-text-field
-              :disabled="!isEditable"
+              :readonly="!isEditable"
               color="white"
               label="Название"
               v-model="suggestion.name"
@@ -16,12 +16,12 @@
               label="Описание"
               rows="1"
               placeholder="Описание отсутствует"
-              :disabled="!isEditable"
+              :readonly="!isEditable"
               :value="suggestion.description"
               auto-grow
             ></v-textarea>
             <v-select
-              :disabled="!isEditable"
+              :readonly="!isEditable"
               :items="responsibilityAreas"
               v-model="suggestion.place"
               item-text="title"
@@ -33,7 +33,7 @@
             <v-select
               v-model="suggestion.category"
               :items="category"
-              :disabled="!isEditable"
+              :readonly="!isEditable"
               item-text="value"
               item-value="key"
               label="Категория изменений"
@@ -41,7 +41,7 @@
               return-object
             ></v-select>
             <v-text-field
-              :disabled="!isEditable"
+              :readonly="!isEditable"
               color="white"
               label="Контакт"
               placeholder="Контакт отсутсвует"
