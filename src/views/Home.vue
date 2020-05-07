@@ -36,7 +36,7 @@ export default {
       this.loading = true;
 
       axios
-        .get("./api/advice_to_plants.geojson")
+        .get("./api/advice_to_plants")
         .then(response => {
           this.$store.dispatch("setLayerAction", response.data);
           this.loading = false;

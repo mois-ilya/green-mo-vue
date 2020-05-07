@@ -2,15 +2,16 @@
   <v-app id="inspire">
 
     <v-app-bar app clipped-left>
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-toolbar-title>Владимирский МО</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-text-field
+      <!-- <v-text-field
         hide-details
         prepend-icon="search"
         single-line
         clearable
+        width="200"
         @keydown.enter="test"
-      ></v-text-field>
+      ></v-text-field> -->
       <v-btn text @click="toggleEditMode">
         <v-icon v-if="!isEditable">mdi-pencil</v-icon>
         <v-icon v-if="isEditable">mdi-eye</v-icon>

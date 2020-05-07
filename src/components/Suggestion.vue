@@ -45,7 +45,7 @@
               color="white"
               label="Контакт"
               placeholder="Контакт отсутсвует"
-              v-model="suggestion.contactText"
+              v-model="suggestion.contact"
             ></v-text-field>
             <v-row align="center">
               <v-col class="text-center" cols="6" sm="6">
