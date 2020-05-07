@@ -16,6 +16,9 @@
         <v-icon v-if="!isEditable">mdi-pencil</v-icon>
         <v-icon v-if="isEditable">mdi-eye</v-icon>
       </v-btn>
+      <v-btn text @click="saveXLS">
+        <v-icon>mdi-download</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-content>
@@ -25,6 +28,7 @@
 </template>
 
 <script>
+import XlsExport from 'xlsexport';
 
 export default {
   props: {
@@ -50,6 +54,12 @@ export default {
     test() {
       alert('test')
     },
+    saveXLS() {
+      const data = this.$store.getters.layerForXLS;
+      const xls = new XlsExport(data, `Данные о заявках на ${new Date()}`);
+
+      xls.exportToXLS('Заявки на озеленение.xlsx');
+    }
   }
 };
 </script>
