@@ -80,7 +80,7 @@ export const store = new Vuex.Store({
     toggleEditModeAction({ commit }) {
       commit('toggleEditMode')
     },
-    saveXLS(){}
+    saveXLS() { }
   },
 
   getters: {
@@ -106,16 +106,19 @@ export const store = new Vuex.Store({
       return id => state.features.find(item => item.properties.id === id).properties;
     },
     layerForXLS(state) {
-      return state.features.map(item => new Object({
-        id: item.properties.id,
-        category: item.properties.category,
-        place: item.properties.place,
-        name: item.properties.name,
-        contact: item.properties.contact,
-        description: item.properties.description,
-        x: item.geometry.coordinates[0],
-        y: item.geometry.coordinates[1],
-      }))
+      const header = ['id', 'category', 'place', 'name', 'contact', 'description', 'x', 'y'];
+      const body = state.features.map(item => [
+        item.properties.id,
+        item.properties.category,
+        item.properties.place,
+        item.properties.name,
+        item.properties.contact,
+        item.properties.description,
+        item.geometry.coordinates[0],
+        item.geometry.coordinates[1],
+      ]);
+
+      return [header].concat(body);
     }
   }
 })

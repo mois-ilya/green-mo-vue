@@ -1,6 +1,5 @@
 <template>
   <v-app id="inspire">
-
     <v-app-bar app clipped-left>
       <v-toolbar-title>Владимирский МО</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -11,7 +10,7 @@
         clearable
         width="200"
         @keydown.enter="test"
-      ></v-text-field> -->
+      ></v-text-field>-->
       <v-btn text @click="toggleEditMode">
         <v-icon v-if="!isEditable">mdi-pencil</v-icon>
         <v-icon v-if="isEditable">mdi-eye</v-icon>
@@ -28,7 +27,8 @@
 </template>
 
 <script>
-import XlsExport from 'xlsexport';
+import xlsx from "xlsx";
+import { saveAs } from "file-saver";
 
 export default {
   props: {
@@ -37,7 +37,7 @@ export default {
   data() {
     return {
       isGeolocate: false
-    }
+    };
   },
   created() {
     this.$vuetify.theme.dark = true;
@@ -52,13 +52,38 @@ export default {
       this.$store.dispatch("toggleEditModeAction");
     },
     test() {
-      alert('test')
+      alert("test");
     },
     saveXLS() {
       const data = this.$store.getters.layerForXLS;
-      const xls = new XlsExport(data, `Данные о заявках на ${new Date()}`);
+      // const xls = new XlsExport(data, `Данные о заявках на ${new Date()}`);
 
-      xls.exportToXLS('Заявки на озеленение.xlsx');
+      // xls.exportToXLS("Заявки на озеленение.xlsx");
+
+      const wb = xlsx.utils.book_new();
+      wb.Props = {
+        Title: "SheetJS Tutorial",
+        Subject: "Test",
+        Author: "Red Stapler",
+        CreatedDate: new Date(2017, 12, 19)
+      };
+
+      wb.SheetNames.push("Test Sheet");
+      const ws_data = data;
+      const ws = xlsx.utils.aoa_to_sheet(ws_data);
+      wb.Sheets["Test Sheet"] = ws;
+      const wbout = xlsx.write(wb, { bookType: "xlsx", type: "binary" });
+      function s2ab(s) {
+        const buf = new ArrayBuffer(s.length);
+        const view = new Uint8Array(buf);
+        for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xff;
+        return buf;
+      }
+
+      saveAs(
+        new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
+        "test.xlsx"
+      );
     }
   }
 };
