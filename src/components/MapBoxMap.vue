@@ -34,7 +34,7 @@ export default {
   mounted() {
     const map = (this.map = new Mapboxgl.Map({
       container: this.$refs["map"],
-      style: "mapbox://styles/mapbox/light-v10",
+      style: "mapbox://styles/mois-ilya/ckcb39hmt4soe1iphp2qv1h7v",
       zoom: 13.5,
       center: pointCoordinates
     }));
