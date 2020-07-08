@@ -1,7 +1,7 @@
 <template>
   <v-app id="inspire">
     <v-app-bar app clipped-left>
-      <v-toolbar-title>Владимирский МО</v-toolbar-title>
+      <v-toolbar-title class="title">Владимирский МО</v-toolbar-title>
       <v-spacer></v-spacer>
       <!-- <v-text-field
         hide-details
@@ -56,9 +56,6 @@ export default {
     },
     saveXLS() {
       const data = this.$store.getters.layerForXLS;
-      // const xls = new XlsExport(data, `Данные о заявках на ${new Date()}`);
-
-      // xls.exportToXLS("Заявки на озеленение.xlsx");
 
       const wb = xlsx.utils.book_new();
       wb.Props = {
@@ -97,5 +94,9 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden !important;
+}
+
+.title {
+  user-select: none; 
 }
 </style>
