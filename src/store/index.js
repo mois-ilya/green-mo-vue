@@ -7,7 +7,7 @@ export const store = new Vuex.Store({
   state: {
     features: null,
     type: null,
-    isEditable: false,
+    isEditable: sessionStorage.getItem('isEditable') === "true",
     visibleSuggestion: false,
     category: [
       { key: "name", value: "Мелкий саженец цветы, кусты, земля и т.д." },
@@ -61,6 +61,7 @@ export const store = new Vuex.Store({
     },
     toggleEditMode(state) {
       state.isEditable = !state.isEditable;
+      sessionStorage.setItem('isEditable', state.isEditable);
     },
     toggleVisibleSuggestion(state, value) {
       state.visibleSuggestion = value;
