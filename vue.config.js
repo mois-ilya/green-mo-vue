@@ -7,13 +7,9 @@ module.exports = {
         target: "http://localhost:3000/"
       }
     },
-    // https: {
-    //   key: fs.readFileSync('/Users/Mois/Desktop/Projects/ssl/localhost.key'),
-    //   cert: fs.readFileSync('/Users/Mois/Desktop/Projects/ssl/localhost.crt'),
-    //   // ca: fs.readFileSync('./certs/ca.crt'),
-    // },
+    https: true
   },
-  "transpileDependencies": [
+  transpileDependencies: [
     "vuetify"
   ],
   pwa: {
